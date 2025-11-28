@@ -20,9 +20,9 @@ public class DeviceConfigController {
     }
 
     /**
-     * Endpoint: POST /api/config
-     * Creates configuration.
-     * Uses defaults for missing parameters.
+     * Creates a new configuration. If the device already has one,
+     * the existing configuration is updated.
+     * Missing fields fall back to default values.
      */
     @PostMapping
     public ResponseEntity<DeviceConfig> createConfiguration(
@@ -36,8 +36,7 @@ public class DeviceConfigController {
     }
 
     /**
-     * Endpoint PUT /api/config
-     * Updates device configuration
+     * Updates a device configuration.
      */
     @PutMapping
     public ResponseEntity<DeviceConfig> updateConfiguration(
@@ -63,8 +62,8 @@ public class DeviceConfigController {
     }
 
     /**
-     * Endpoint: GET /api/config/{deviceId}
-     * Used to get configuration parameters.
+     * Retrieves configuration by deviceId.
+     * When defaultIfAbsent=true, returns a transient default config instead of 404.
      */
     @GetMapping("/{deviceId}")
     public ResponseEntity<?> getConfigByDeviceId(
@@ -85,8 +84,8 @@ public class DeviceConfigController {
     }
 
     /**
-     * Endpoint: DELETE /api/config/{deviceId}
-     * Deletes configuration by Device ID
+     * Deletes a device configuration. Returns the deleted configuration,
+     * or 404 if none exists.
      */
     @DeleteMapping("/{deviceId}")
     public ResponseEntity<?> deleteConfigByDeviceId(@PathVariable String deviceId) {

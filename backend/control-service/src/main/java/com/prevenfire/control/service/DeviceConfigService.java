@@ -17,13 +17,13 @@ public class DeviceConfigService {
     }
 
     /**
-     * Creates or Updates the device configuration.
-     * CREATION: If fields are null, uses project defaults.
-     * UPDATE: If fields are null, use previous configurations.
+     * Creates or updates a device configuration.
+     * - Creation: missing fields are filled with project defaults.
+     * - Update: missing fields retain previously persisted values.
      */
     @Transactional
     public DeviceConfig saveConfig(DeviceConfigRequestDTO configRequest) {
-        // Load existing config if present, or instance a Model with default attributes
+        // Load existing configuration or instance a transient instance with defaults.
         DeviceConfig config = repository.findById(configRequest.deviceId())
                 .orElse(new DeviceConfig(configRequest.deviceId()));
 
@@ -40,7 +40,7 @@ public class DeviceConfigService {
             config.setReadingIntervalMs(configRequest.readingIntervalSeconds() * 1000);
         }
 
-        // Calculate Effective Temperature Limit
+        // Recalculate the effective temperature limit based on High Tolerance mode.
         if (Boolean.TRUE.equals(config.getHighToleranceEnabled())) {
             config.setEffectiveTemperatureLimit(config.getTemperatureLimit() + 30);
         } else {
@@ -51,9 +51,8 @@ public class DeviceConfigService {
     }
 
     /**
-     * Resets configuration to project defaults at saving
-     * @param requestDTO
-     * @return Configuration reset
+     * Resets an existing device configuration to project defaults.
+     * Throws EntityNotFoundException if the device does not exist.
      */
     @Transactional
     public DeviceConfig resetConfig(String deviceId) {
@@ -78,9 +77,8 @@ public class DeviceConfigService {
     }
 
     /**
-     * Retrieves config. If not found, returns transient default object (not saved in DB).
+     * Retrieves a configuration. If absent, returns a transient default instance (not persisted).
      * Useful for embedded devices with no configs saved yet, avoiding errors.
-     * @return device found or default DeviceConfig
      */
     public DeviceConfig getConfigByDeviceOrDefault(String deviceId) {
         return repository.findById(deviceId)

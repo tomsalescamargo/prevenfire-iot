@@ -25,8 +25,8 @@ public class DeviceConfig {
 
     private String highToleranceReason;
 
-    // Real limit used by device to trigger alarms,
-    // considering High Tolerance special modes
+    // Final temperature limit to be applied by the device,
+    // adjusted according to High Tolerance settings.
     @Column(nullable = false)
     private Double effectiveTemperatureLimit;
 
@@ -40,7 +40,8 @@ public class DeviceConfig {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    // Constructor to create defaults without saving
+    // Creates a transient configuration instance with project default values.
+    // Used when the device has no persisted configuration.
     public DeviceConfig(String deviceId) {
         this.deviceId = deviceId;
         this.temperatureLimit = 50.0;
