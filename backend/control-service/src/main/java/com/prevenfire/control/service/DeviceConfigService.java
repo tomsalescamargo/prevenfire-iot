@@ -66,6 +66,7 @@ public class DeviceConfigService {
         config.setTemperatureLimit(null);
         config.setHighToleranceEnabled(null);
         config.setHighToleranceReason(null);
+        config.setEffectiveTemperatureLimit(null);
         config.setReadingIntervalMs(null);
 
         repository.save(config);
