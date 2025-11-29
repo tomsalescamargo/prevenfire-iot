@@ -22,20 +22,19 @@ public class SensorReadingController {
 
     /**
      * Endpoint: POST /api/readings
-     * Register a sensor reading.
+     * Registers a sensor reading.
+     * <p>
+     * Returns 201 Created with a concise String body.
+     * This is an intentional architectural decision to reduce bandwidth usage
+     * and processing overhead on the embedded client, which does not
+     * require the saved object to be returned.
      */
     @PostMapping
     public ResponseEntity<String> registerSensorReading(
             @Valid @RequestBody SensorReadingRequestDTO readingDTO
     ) {
-        // Convert DTO -> Model
-        SensorReading sensorReadingModel = new SensorReading();
-        sensorReadingModel.setDeviceId(readingDTO.deviceId());
-        sensorReadingModel.setTemperature(readingDTO.temperature());
-        sensorReadingModel.setTemperatureLimit(readingDTO.temperatureLimit());
-
         // Delegates business logic to service layer
-        service.registerReading(sensorReadingModel);
+        service.registerReading(readingDTO);
 
         // Return HTTP 201 (CREATED) - Spring already handles and return errors
         return ResponseEntity
