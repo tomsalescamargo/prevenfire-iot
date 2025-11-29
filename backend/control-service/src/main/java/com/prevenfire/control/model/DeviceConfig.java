@@ -52,7 +52,7 @@ public class DeviceConfig {
 
     @PrePersist
     @PreUpdate
-    public void prePersist() {
+    public void ensureConsistency() {
         if (this.temperatureLimit == null) {
             this.temperatureLimit = 50.0;
         }
@@ -67,10 +67,6 @@ public class DeviceConfig {
 
         if (this.effectiveTemperatureLimit == null) {
             this.effectiveTemperatureLimit = this.temperatureLimit;
-        }
-
-        if (this.highToleranceEnabled && this.temperatureLimit.equals(this.effectiveTemperatureLimit)) {
-            this.effectiveTemperatureLimit = this.temperatureLimit + 30;
         }
     }
 }
