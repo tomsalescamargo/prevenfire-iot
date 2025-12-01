@@ -4,7 +4,7 @@
     "slug": "PrevenfireIot",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/a-minimalist-circular-logo-design-featur_6SO4rhPlTEiohspzeSOFNA_NzrloH2oTzmxlSwSLfWQ_A.jpeg",
+    "icon": "./assets/images/logo.png",
     "scheme": "prevenfireiot",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,

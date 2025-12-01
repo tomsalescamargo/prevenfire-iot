@@ -7,29 +7,27 @@ export interface ConfigRequest {
 }
 
 export type ConfigResponse =
-  Omit<ConfigRequest, "readingIntervalSeconds"> & {
-      readingIntervalMs: number;
+  Omit<ConfigRequest, 'readingIntervalSeconds'> & {
+    readingIntervalMs: number;
   };
-
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL; 
 
 export const ConfigService = {
-
   get: async (deviceId: string): Promise<ConfigResponse | null> => {
-    try {
-      const res = await fetch(`${BASE_URL}/api/config/${deviceId}`);
+    const res = await fetch(`${BASE_URL}/api/config/${deviceId}`);
 
-      if (res.status === 404) return null;
-      if (!res.ok) throw new Error('Failed to fetch configuration');
-      return await res.json();
-
-    } catch (error) {
-      throw error;
+    if (res.status === 404) {
+      return null;
     }
+    if (!res.ok) {
+      throw new Error('Failed to fetch configuration');
+    }
+
+    return res.json();
   },
 
-  save: async (config: ConfigRequest, isUpdate: boolean) => {
+  save: async (config: ConfigRequest, isUpdate: boolean): Promise<ConfigResponse> => {
     const method = isUpdate ? 'PUT' : 'POST';
 
     const res = await fetch(`${BASE_URL}/api/config`, {
@@ -38,15 +36,20 @@ export const ConfigService = {
       body: JSON.stringify(config),
     });
 
-    if (!res.ok) throw new Error('Failed to save configuration');
-    return await res.json();
+    if (!res.ok) {
+      throw new Error('Failed to save configuration');
+    }
+    return res.json();
   },
 
   reset: async (deviceId: string): Promise<ConfigResponse> => {
     const res = await fetch(`${BASE_URL}/api/config/${deviceId}/reset`, {
       method: 'PUT',
     });
-    if (!res.ok) throw new Error('Failed to reset configuration');
-    return await res.json();
+
+    if (!res.ok) {
+      throw new Error('Failed to reset configuration');
+    }
+    return res.json();
   }
 };

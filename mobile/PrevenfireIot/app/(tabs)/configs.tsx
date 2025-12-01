@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { 
   View, Text, TextInput, Switch, Pressable, Alert, 
   ActivityIndicator, ScrollView, KeyboardAvoidingView, Platform 
@@ -8,25 +8,25 @@ import { ConfigService, ConfigRequest } from '@/service/ConfigService';
 import { useDebounce } from '@/hooks/useDebounce';
 
 export default function ConfigsScreen() {
-  // DeviceId
   const [deviceId, setDeviceId] = useState('');
   const debouncedId = useDebounce(deviceId, 800);
 
-  // Utils
   const [isLoading, setIsLoading] = useState(false);
   const [isEditingConfig, setIsEditingConfig] = useState(false);
   const [statusMsg, setStatusMsg] = useState('');
 
-  // Form Data
-  const [temperatureLimit, setTemperatureLimit] = useState("");
+  const [temperatureLimit, setTemperatureLimit] = useState('');
   const [highToleranceEnabled, setHighToleranceEnabled] = useState(false);
-  const [highToleranceReason, setHighToleranceReason] = useState("");
-  const [readingIntervalSeconds, setReadingIntervalSeconds] = useState("");
+  const [highToleranceReason, setHighToleranceReason] = useState('');
+  const [readingIntervalSeconds, setReadingIntervalSeconds] = useState('');
+
+  const isMountedRef = useRef(true);
 
 
-  // Debounced Automatic Search --> debouncedId
   useEffect(() => {
-    if (!debouncedId || deviceId.trim() === "") {
+    isMountedRef.current = true;
+
+    if (!debouncedId || deviceId.trim() === '') {
       setStatusMsg('');
       setTemperatureLimit('');
       setReadingIntervalSeconds('');
@@ -34,16 +34,16 @@ export default function ConfigsScreen() {
       return;
     }
 
-    let isActive = true;
-
     const fetchConfig = async () => {
+      if (!isMountedRef.current) return;
+
       setIsLoading(true);
       setStatusMsg('Verificando dispositivo...');
 
       try {
         const data = await ConfigService.get(debouncedId);
 
-        if (!isActive) return;
+        if (!isMountedRef.current) return;
 
         if (data) {
           // Found Config: Edit Mode
@@ -58,9 +58,9 @@ export default function ConfigsScreen() {
           setReadingIntervalSeconds(String(data.readingIntervalMs / 1000));
 
         } else {
-          // Not Found: Create Mode
+          // Not Found: Creation Mode
           setIsEditingConfig(false);
-          setStatusMsg("Dispositivo Novo. Preencha para criar.");
+          setStatusMsg('Dispositivo Novo. Preencha para criar.');
 
           setTemperatureLimit('');
           setHighToleranceEnabled(false);
@@ -68,37 +68,40 @@ export default function ConfigsScreen() {
           setReadingIntervalSeconds('');
         }
       } catch (err) {
-        if (isActive) setStatusMsg('Erro de Conexão!');
+        if (!isMountedRef.current) return;
+        setStatusMsg('Erro de Conexão!');
       } finally {
-        if (isActive) setIsLoading(false);
+        if (isMountedRef.current) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchConfig();
 
-    return () => { isActive = false }; // Cleanup
+    return () => {
+      isMountedRef.current = false; // Cleanup
+    };
   }, [debouncedId]);
 
   // Send Config
-  const handleSendConfig = async () => {
-    if (!debouncedId || deviceId.trim() === "") {
-      Alert.alert("Erro", "Device ID é obrigatório");
+  const handleSendConfig = async (): Promise<void> => {
+    if (!debouncedId || deviceId.trim() === '') {
+      Alert.alert('Erro', 'Device ID é obrigatório');
       return;
     }
 
-    // Sanitization
     const normalizedTemp = temperatureLimit.replace(',', '.');
-    const cleanedTemp = normalizedTemp.replace(/[^0-9.]/g, "");
+    const cleanedTemp = normalizedTemp.replace(/[^0-9.]/g, '');
 
     const normalizedInterval = readingIntervalSeconds.replace(',', '.');
-    const cleanedInterval = normalizedInterval.replace(/[^0-9.]/g, "");
+    const cleanedInterval = normalizedInterval.replace(/[^0-9.]/g, '');
 
     const tempLimitValue = parseFloat(cleanedTemp);
     const intervalValue = parseInt(cleanedInterval);
 
-    // Logic Validation
     if (isNaN(tempLimitValue)) {
-      Alert.alert("Erro", "Limite de temperatura é obrigatório e deve ser um número");
+      Alert.alert('Erro', 'Limite de temperatura é obrigatório e deve ser um número');
       return;
     }
 
@@ -109,7 +112,7 @@ export default function ConfigsScreen() {
        we restrict standard users here to protect the API Gateway and Database from saturation.
     */
     if (isNaN(intervalValue) || intervalValue < 10) {
-      Alert.alert("Atenção", "Para evitar sobrecarga, o intervalo mínimo é de 10 segundos.");
+      Alert.alert('Atenção', 'Para evitar sobrecarga, o intervalo mínimo é de 10 segundos.');
       return;
     }
 
@@ -123,11 +126,11 @@ export default function ConfigsScreen() {
 
     try {
       await ConfigService.save(requestBody, isEditingConfig);
-      Alert.alert("Sucesso ✅", `Configuração ${isEditingConfig ? "atualizada" : "criada"} com sucesso!`);
+      Alert.alert('Sucesso ✅', `Configuração ${isEditingConfig ? 'atualizada' : 'criada'} com sucesso!`);
       setIsEditingConfig(true);
       setStatusMsg('Configuração salva.');
     } catch (err) {
-      Alert.alert("Erro", "Falha ao salvar.");
+      Alert.alert('Erro', 'Falha ao salvar.');
     }
   };
 
@@ -135,7 +138,7 @@ export default function ConfigsScreen() {
   const handleResetConfig = async () => {
     try {
       const data = await ConfigService.reset(debouncedId);
-      Alert.alert("Sucesso", "Configuração resetada com sucesso!");
+      Alert.alert('Sucesso', 'Configuração resetada com sucesso!');
 
       setIsEditingConfig(true);
       setStatusMsg('Configuração resetada.');
@@ -147,13 +150,13 @@ export default function ConfigsScreen() {
       setReadingIntervalSeconds(String(data.readingIntervalMs / 1000));
 
     } catch (err) {
-      Alert.alert("Erro", "Falha ao resetar.");
+      Alert.alert('Erro', 'Falha ao resetar.');
     }
   };
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={tw`flex-1 bg-white`}
     >
       <ScrollView contentContainerStyle={tw`p-6 grow`}>
@@ -162,27 +165,29 @@ export default function ConfigsScreen() {
           Gerenciar Dispositivos
         </Text>
 
-        {/* Device ID Smart Input */}
-        <View style={tw`mb-2`}>
-          <Text style={tw`text-gray-700 mb-2 font-bold uppercase text-xs`}>
-            Id do dispositivo
+        {/* Device ID Input */}
+        <View style={tw`mb-4`}>
+          <Text style={tw`text-gray-700 font-bold text-xs uppercase mb-2`}>
+            ID do Dispositivo
           </Text>
           <View>
             <TextInput
-              style={tw`border ${isEditingConfig ? 'border-green-500' : 'border-blue-500'} rounded-xl p-4 pt-1 bg-gray-50 text-lg`}
+              style={tw`border-2 ${isEditingConfig ? 'border-green-500' : 'border-blue-500'} rounded-xl px-4 pb-2 h-14 bg-white text-lg`}
               placeholder="Digite o ID (ex: ESP32-01)"
+              placeholderTextColor="#9CA3AF"
               value={deviceId}
               onChangeText={setDeviceId}
               autoCapitalize="none"
+              textAlignVertical="center"
             />
             {isLoading && (
-              <View style={tw`absolute right-4 top-4`}>
+              <View style={tw`absolute right-4 top-3`}>
                 <ActivityIndicator color="#667" />
               </View>
             )}
           </View>
 
-          <Text style={tw`mt-2 text-sm font-semibold ${isEditingConfig ? 'text-green-600' : 'text-blue-600'} h-5`}>
+          <Text style={tw`mt-1 text-xs font-semibold h-5 ${isEditingConfig ? 'text-green-600' : 'text-blue-600'}`}>
             {statusMsg}
           </Text>
         </View>
@@ -217,18 +222,18 @@ export default function ConfigsScreen() {
           </View>
 
           {/* High Tolerance Mode */}
-            <View style={tw`mb-6 flex-row items-center align-center justify-start`}>
-              <Text style={tw`text-gray-600 mr-4 font-semibold`}>
-                Modo Alta Tolerância
-              </Text>
+          <View style={tw`mb-6 flex-row items-center justify-start`}>
+            <Text style={tw`text-gray-600 mr-4 font-semibold`}>
+              Modo Alta Tolerância
+            </Text>
 
-              <Switch
-                value={highToleranceEnabled}
-                onValueChange={setHighToleranceEnabled}
-                trackColor={{false: "#d1d5db", true: "#fca5a5"}}
-                thumbColor={highToleranceEnabled ? "#dc2626" : "#f4f4f5"}
-              />
-            </View>
+            <Switch
+              value={highToleranceEnabled}
+              onValueChange={setHighToleranceEnabled}
+              trackColor={{ false: '#d1d5db', true: '#fca5a5' }}
+              thumbColor={highToleranceEnabled ? '#dc2626' : '#f4f4f5'}
+            />
+          </View>
 
           {/* High Tolerance Reason */}
           {highToleranceEnabled && (
@@ -238,7 +243,7 @@ export default function ConfigsScreen() {
               </Text>
               <TextInput
                 style={tw`border border-gray-300 rounded-xl p-3 bg-white`}
-                placeholder='Ex: Cozinhando'
+                placeholder="Ex: Cozinhando"
                 value={highToleranceReason}
                 onChangeText={setHighToleranceReason}
               />
@@ -270,4 +275,5 @@ export default function ConfigsScreen() {
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
-)};
+  );
+}
