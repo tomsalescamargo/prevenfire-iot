@@ -1,10 +1,10 @@
 # **PrevenFire IoT – Temperature Monitoring & Alerting Platform**
 
 PrevenFire IoT is a complete proof-of-concept platform for real-time temperature monitoring and alerting.
-It combines **Java 17**, **Spring Boot microservices**, **API Gateway**, **PostgreSQL**, **Docker**, and a **React Native (Expo)** mobile app—fully integrated with an **ESP32** embedded device.
+It integrates **Java 17**, **Spring Boot microservices**, an **API Gateway**, **PostgreSQL**, **Docker**, and a **React Native (Expo)** mobile app—fully connected to an **ESP32** embedded device.
 
 This project was built with a strong focus on **clean architecture**, **separation of concerns**, **scalability**, **solid backend design**, and **mobile best practices** (debounce, loading states, UX feedback).
-Although its visual identity focuses on fire-prone environments (kitchens, offices, warehouses), the architecture is flexible enough to support scenarios such as cold rooms, server racks, greenhouses, heated pools, and more.
+Although visually aligned with fire-risk scenarios (kitchens, offices, warehouses), the same structure supports cold rooms, server racks, greenhouses, heated pools, and other temperature-sensitive environments.
 
 ---
 
@@ -13,30 +13,30 @@ Although its visual identity focuses on fire-prone environments (kitchens, offic
 ### 🔧 **Centralized IoT Device Configuration**
 
 * Configure temperature limits, reading intervals, and high-tolerance mode directly from the mobile app.
-* Backend automatically computes the `effectiveTemperatureLimit` when tolerance mode is active.
+* Backend automatically computes `effectiveTemperatureLimit` when tolerance mode is enabled.
 
 ### 📡 **Real-Time Sensor Logging**
 
-* ESP32 sends periodic temperature readings and applied limit.
-* Full per-device history + filtered view for critical (over-limit) events.
+* ESP32 sends periodic readings alongside the applied limit.
+* Full history per device and dedicated filtering for critical (over-limit) events.
 
 ### 📱 **Mobile App (React Native / Expo)**
 
-* Config screens for device ID, limit, interval, and tolerance.
-* Real-time reading list with visual critical indicators.
+* Configuration screens for device ID, limit, interval, and tolerance.
+* Real-time reading list with visual indicators for critical states.
 * Emergency shortcut (193).
 * UX optimized with debounce and status messages.
 
 ### 🧩 **Microservices + API Gateway**
 
-* **Control Service** → device configurations
-* **Logging Service** → reading history
-* **API Gateway** → single unified entry point for mobile + embedded device
+* **Control Service** → device configuration
+* **Logging Service** → temperature readings history
+* **API Gateway** → unified entry point for mobile and embedded requests
 
 ### 📦 **Containerized Infrastructure**
 
-* Two separate PostgreSQL databases.
-* Full orchestration via Docker Compose with isolated networking.
+* Two independent PostgreSQL databases.
+* Docker Compose orchestration with isolated networking.
 
 ---
 
@@ -44,8 +44,8 @@ Although its visual identity focuses on fire-prone environments (kitchens, offic
 
 ### **Embedded Device (ESP32)**
 
-* Reads temperature from a sensor.
-* Fetches config from Control Service.
+* Reads temperature.
+* Retrieves configuration from Control Service.
 * Sends periodic readings to Logging Service.
 
 ---
@@ -61,32 +61,32 @@ Routes:
 
 #### **Control Service (Port 8082)**
 
-* CRUD operations for device configs.
-* Upsert logic for both POST and PUT.
-* Smart fallback for new devices.
+* CRUD for device configurations.
+* Upsert logic shared by POST and PUT.
+* Intelligent fallback for new devices.
 * Reset endpoints and default values.
 
 #### **Logging Service (Port 8081)**
 
-* Persists readings with computed `isOverLimit`.
+* Stores readings with computed `isOverLimit`.
 * Full and critical-only reading history.
 
 ---
 
-### 🗄️ **Databases**
+## 🗄️ **Databases**
 
 * **PostgreSQL – Control**: device configuration
 * **PostgreSQL – Logging**: temperature readings
 
 ---
 
-### **Mobile App (React Native / Expo)**
+## 📱 **Mobile App**
 
-All requests go exclusively through the API Gateway using `EXPO_PUBLIC_API_BASE_URL`.
+All requests go through the API Gateway using the `EXPO_PUBLIC_API_BASE_URL` environment variable.
 
 ---
 
-## 🛠️ **Tech Stack**
+# 🛠️ **Tech Stack**
 
 ### **Backend**
 
@@ -97,20 +97,19 @@ All requests go exclusively through the API Gateway using `EXPO_PUBLIC_API_BASE_
 * Hibernate / JPA
 * Lombok
 * Docker & Docker Compose
-* `spring-dotenv` for environment variables
 
 ### **Mobile**
 
 * React Native (Expo)
 * TypeScript
-* twrnc (Tailwind-like utilities)
+* twrnc (Tailwind-style utilities)
 * Fetch API
 
 ### **Embedded**
 
 * ESP32
 * C firmware
-* HTTP client for configuration + logging APIs
+* HTTP client for config + logging
 
 ---
 
@@ -118,7 +117,7 @@ All requests go exclusively through the API Gateway using `EXPO_PUBLIC_API_BASE_
 
 ## **1. Control Service**
 
-Manages configuration for each device (`deviceId`).
+Manages configuration for each `deviceId`.
 
 ### **DeviceConfig Fields**
 
@@ -142,13 +141,13 @@ Manages configuration for each device (`deviceId`).
   `PUT /api/config/{deviceId}/reset`
 
 * **Intelligent Fallback**
-  Returns in-memory defaults for unknown devices.
+  Returns a default in-memory config for unknown devices.
 
 ---
 
 ## **2. Logging Service**
 
-Stores periodic temperature readings from ESP32.
+Stores periodic temperature readings.
 
 ### **SensorReading Fields**
 
@@ -162,7 +161,6 @@ Stores periodic temperature readings from ESP32.
 ### **Core Behaviors**
 
 * `POST /api/readings`
-  Minimal response to optimize embedded bandwidth.
 
 * `GET /api/readings/{deviceId}`
 
@@ -173,6 +171,7 @@ Stores periodic temperature readings from ESP32.
 ## **3. API Gateway**
 
 Unified entry point (`:8080`).
+
 Routes:
 
 * `/api/readings/**` → `:8081`
@@ -182,15 +181,9 @@ Routes:
 
 # 📱 **Mobile App Structure**
 
-Located at: `mobile/PrevenfireIot`
-
-## **Tabs**
-
----
-
 ### **Configs Tab**
 
-* Device ID input with debounce
+* Debounced device ID input
 * Auto-fetch config
 * Fields:
 
@@ -208,17 +201,17 @@ Located at: `mobile/PrevenfireIot`
 ### **Readings Tab**
 
 * Debounced device ID
-* "Critical only" filter
+* “Critical only” filter
 * List:
 
   * Timestamp
   * Temperature + applied limit
   * Critical highlight
-* Emergency call (193)
+* Emergency call shortcut (193)
 
 ---
 
-# 🧪 **Services (Mobile)**
+## 🧪 **Mobile Services**
 
 ### **ConfigService.ts**
 
@@ -236,14 +229,13 @@ Located at: `mobile/PrevenfireIot`
 
 # 🔌 **Embedded (ESP32) Overview**
 
-### Responsibilities
+Responsibilities:
 
 * Fetch configuration from Control Service
 * Apply limits and intervals
-* Read temperature continuously
-* Activate actuator (LED/buzzer/alarm) when over limit
-* Send readings via Gateway:
-  `POST /api/readings`
+* Continuously read temperature
+* Trigger actuator (LED/buzzer/alarm) when over limit
+* Send readings via Gateway: `POST /api/readings`
 
 ---
 
@@ -268,45 +260,30 @@ docker compose up -d
 
 ## **2. Start Backend**
 
-🧩 **Environment Setup (.env)**
+Because each Spring Boot microservice runs independently, they **do not inherit** the root `.env` when started via Maven.
+IntelliJ merges environment contexts automatically, but Maven does not—so each service must contain its own `.env`.
 
-Before running the backend, make sure your environment variables are correctly configured.
+### Steps:
 
-Because each Spring Boot microservice runs independently (especially when started via Maven), **they do not read the `.env` file located at the project root**.
-IntelliJ automatically merges environment context during execution, but Maven does **not** — therefore **each service must contain its own `.env` file**.
+1. Edit `.env.example` in the project root and rename it to `.env`.
+2. Copy this `.env` into:
 
-### **a. Create the root `.env`**
-
-In the project root you will find:
-
-* `.env.example`
-
-Edit the `.env.example` with your own database credentials and then rename it to `.env`.
-
-### **b. Copy the `.env` into each microservice**
-
-Copy the **root `.env`** into:
-
-```
-backend/control-service/.env
-backend/logging-service/.env
-```
-
-> ⚠️ **Important:**
-> Without these copies, the services will not load database credentials when executed via Maven, even though IntelliJ might run them correctly.
-
-### **c. Run Applications**
+   ```
+   backend/control-service/.env
+   backend/logging-service/.env
+   ```
+3. Start services:
 
 ```bash
-# API Gateway (8080)
+# API Gateway
 cd backend/api-gateway
 ./mvnw spring-boot:run
 
-# Control Service (8082)
+# Control Service
 cd backend/control-service
 ./mvnw spring-boot:run
 
-# Logging Service (8081)
+# Logging Service
 cd backend/logging-service
 ./mvnw spring-boot:run
 ```
@@ -327,12 +304,14 @@ Set environment variable:
 EXPO_PUBLIC_API_BASE_URL=http://YOUR_LOCAL_IP:8080
 ```
 
-Start:
+Run:
 
 ```
 npx expo start --port 8085
 ```
-or
+
+or:
+
 ```
 npx expo start --tunnel --port 8085 -c
 ```
@@ -355,8 +334,7 @@ npx expo start --tunnel --port 8085 -c
 * GET `/api/readings/{deviceId}`
 * GET `/api/readings/{deviceId}/criticals`
 
-All requests via API Gateway:
-`http://YOUR_LOCAL_IP:8080`
+(Through API Gateway `:8080`)
 
 ---
 
@@ -365,8 +343,7 @@ All requests via API Gateway:
 * Device Config: ``
 * Readings Monitoring: ``
 
-Demo video (ESP32 + Backend + App):
-``
+Demo video (ESP32 + Backend + App): ``
 
 ---
 
@@ -382,7 +359,7 @@ Demo video (ESP32 + Backend + App):
 
 * Device selector
 * Favorites / recent
-* Alternative UI themes
+* Theme options
 
 ### Embedded
 
@@ -393,5 +370,6 @@ Demo video (ESP32 + Backend + App):
 
 # 📄 **License**
 
-This project is a proof of concept for robust temperature monitoring and alerting systems.
-Feel free to adapt it to your environment (cold storage, pools, data centers, etc.) while maintaining best practices for security and scalability.
+This is a proof-of-concept platform for temperature monitoring and alerting.
+You may adapt it for environments such as cold storage, pools, or data centers while maintaining good security and scalability practices.
+
