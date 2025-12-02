@@ -8,7 +8,7 @@ export interface ConfigRequest {
 
 export type ConfigResponse =
   Omit<ConfigRequest, 'readingIntervalSeconds'> & {
-    readingIntervalMs: number;
+      readingIntervalMs: number;
   };
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL; 

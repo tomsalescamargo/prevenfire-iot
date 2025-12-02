@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
-import { 
-  View, Text, TextInput, Switch, Pressable, Alert, 
-  ActivityIndicator, ScrollView, KeyboardAvoidingView, Platform 
+import {
+  View, Text, TextInput, Switch, Pressable, Alert,
+  ActivityIndicator, ScrollView, KeyboardAvoidingView, Platform
 } from 'react-native';
 import tw from 'twrnc';
+
 import { ConfigService, ConfigRequest } from '@/service/ConfigService';
 import { useDebounce } from '@/hooks/useDebounce';
 
@@ -71,9 +72,8 @@ export default function ConfigsScreen() {
         if (!isMountedRef.current) return;
         setStatusMsg('Erro de Conexão!');
       } finally {
-        if (isMountedRef.current) {
-          setIsLoading(false);
-        }
+        if (!isMountedRef.current) return;
+        setIsLoading(false);
       }
     };
 

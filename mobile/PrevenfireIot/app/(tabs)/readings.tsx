@@ -16,7 +16,6 @@ export default function ReadingsScreen() {
 
   const [onlyCriticals, setOnlyCriticals] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
   const [isValidDevice, setIsValidDevice] = useState<boolean | null>(null); 
   const [statusMsg, setStatusMsg] = useState("");
 
@@ -70,9 +69,8 @@ export default function ReadingsScreen() {
       setDeviceReadings([]);
       setStatusMsg('Dispositivo não encontrado');
     } finally {
-      if (isMountedRef.current) {
-        setIsLoading(false);
-      }
+      if (!isMountedRef.current) return;
+      setIsLoading(false);
     }
   }, [debouncedId, onlyCriticals]);
 
@@ -89,7 +87,7 @@ export default function ReadingsScreen() {
     fetchReadings();
 
     return () => {
-      isMountedRef.current = false;
+      isMountedRef.current = false; // Cleanup
     };
   }, [fetchReadings]);
 
@@ -145,7 +143,7 @@ export default function ReadingsScreen() {
   );
 
   const getBorderColor = (): string => {
-    if (isLoading) return 'border-blue-300';
+    if (isLoading) return 'border-blue-500';
     if (isValidDevice === true) return 'border-blue-300';
     if (isValidDevice === false) return 'border-red-500';
     return 'border-gray-300';
@@ -186,10 +184,10 @@ export default function ReadingsScreen() {
 
       <View style={tw`flex-row justify-between items-center bg-white p-3 rounded-xl border border-gray-200 mb-6 shadow-sm`}>
         <View style={tw`flex-row items-center gap-2`}>
-          <MaterialCommunityIcons 
+          <MaterialCommunityIcons
             name="alert-decagram" 
-            size={20} 
-            color={onlyCriticals ? '#DC2626' : '#9CA3AF'} 
+            size={20}
+            color={onlyCriticals ? '#DC2626' : '#9CA3AF'}
           />
           <Text style={tw`text-gray-700 font-semibold`}>Apenas Críticos</Text>
         </View>
