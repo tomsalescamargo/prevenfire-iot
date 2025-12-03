@@ -290,7 +290,8 @@ However, the entire architecture fully supports **multiple devices simultaneousl
 
 ### 9.4 Demonstration Video
 The video below shows the full workflow of the platform in action — from configuring settings in the app, through communication with the ESP32, to the light triggered when the temperature exceeds the threshold:
-🎞️ **YouTube – Full Demo:** [https://youtube.com/shorts/zkysfFy7sE8?si=CHGJWQq9r-BO13Zx](https://youtube.com/shorts/zkysfFy7sE8?si=CHGJWQq9r-BO13Zx)
+
+🎞️ **YouTube – Full Demo:** [https://www.youtube.com/shorts/2_A5JjWgkt4?si=ktz4acRXa9DmGzle](https://www.youtube.com/shorts/2_A5JjWgkt4?si=ktz4acRXa9DmGzle)
 
 ---
 
