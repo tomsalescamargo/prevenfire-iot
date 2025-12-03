@@ -254,11 +254,52 @@ Responsibilities:
 
 ---
 
-## 9. Screenshots & Demo
+# **9. Screenshots & Demo**
 
-* Device Config: ``
-* Readings Monitoring: ``
-* Demo video (ESP32 + Backend + App): ``
+Below are some screenshots of the PrevenFire IoT mobile application used in this proof-of-concept.
+For this POC, I used **a single embedded device (ESP32)**.
+However, the entire architecture fully supports **multiple devices simultaneously**, as long as each one uses its own `deviceId`.
+
+---
+
+## **9.1 Home Screen**
+
+The home screen provides quick access to monitoring and device configuration, highlighting the core purpose of the platform: fire-prevention through real-time temperature tracking.
+
+<img src="https://github.com/user-attachments/assets/51dc0ea1-b41b-4bd1-a02f-1902edfec7fc" width="300" />
+
+
+---
+
+## **9.2 Device Configuration**
+
+Here the user can change the temperature limit, reading interval, and enable high-tolerance mode.
+The app applies debounce logic and visual feedback to ensure a smooth and responsive UX.
+
+<img src="https://github.com/user-attachments/assets/d5da4241-05b7-4b6b-97ed-509c38f2a971" width="300" />
+
+
+---
+
+## **9.3 Real-Time Monitoring**
+
+This screen displays all sensor readings sent by the ESP32. User can filter to view only criticals (temperatures above the configured limit).
+
+<img src="https://github.com/user-attachments/assets/a02ebcc0-236d-4ad1-9e7b-a9e80c472958" width="300" />
+
+
+---
+
+## **9.4 Demonstration Video**
+
+The video below shows the full workflow of the platform in action — from configuring settings in the app, through communication with the ESP32, to the light triggered when the temperature exceeds the threshold:
+
+🔗 **YouTube – Full Demo:** *https://youtube.com/shorts/zkysfFy7sE8?si=CHGJWQq9r-BO13Zx*
+
+---
+
+Se quiser, posso integrar isso automaticamente no seu README inteiro, revisar o inglês geral da documentação ou deixá-lo ainda mais profissional.
+
 
 ---
 
