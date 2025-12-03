@@ -1,4 +1,4 @@
-# PrevenFire IoT – Temperature Monitoring & Alerting Platform
+# **PrevenFire IoT – Temperature Monitoring & Alerting Platform 🔥📡**
 
 ## 1. Overview
 
@@ -8,7 +8,7 @@ This project was built with a strong focus on **clean architecture**, **separati
 
 ---
 
-## 2. Features
+## 2. Features ⚙️
 
 ### 2.1 Centralized IoT Device Configuration
 
@@ -33,14 +33,14 @@ This project was built with a strong focus on **clean architecture**, **separati
 * **Logging Service** → temperature readings history
 * **API Gateway** → unified entry point for mobile and embedded requests
 
-### 2.5 Containerized Infrastructure
+### 2.5 Containerized Infrastructure 🐳
 
 * Two independent PostgreSQL databases.
 * Docker Compose orchestration with isolated networking.
 
 ---
 
-## 3. Architecture
+## 3. Architecture 🏗️
 
 ### 3.1 Embedded Device (ESP32)
 
@@ -80,7 +80,7 @@ All requests go through the API Gateway using the `EXPO_PUBLIC_API_BASE_URL` env
 
 ---
 
-## 4. Tech Stack
+## 4. Tech Stack 💻
 
 ### 4.1 Backend
 
@@ -107,7 +107,7 @@ All requests go through the API Gateway using the `EXPO_PUBLIC_API_BASE_URL` env
 
 ---
 
-## 5. API Summary
+## 5. API Summary 🔗
 
 ### 5.1 Control Service
 
@@ -126,7 +126,7 @@ All requests go through the API Gateway using the `EXPO_PUBLIC_API_BASE_URL` env
 
 ---
 
-## 6. Running the Project
+## 6. Running the Project ▶️
 
 ### 6.1 Prerequisites
 
@@ -148,12 +148,14 @@ Because each Spring Boot microservice runs independently, they **do not inherit*
 Steps:
 
 1. Edit `.env.example` in the project root and rename it to `.env`.
+
 2. Copy this `.env` into:
 
    ```
    backend/control-service/.env
    backend/logging-service/.env
    ```
+
 3. Start services:
 
 ```bash
@@ -198,18 +200,21 @@ npx expo start --tunnel --port 8085 -c
 
 ---
 
-## 7. Mobile App Structure
+## 7. Mobile App Structure 📲
 
 ### 7.1 Configs Tab
 
 * Debounced device ID input
+
 * Auto-fetch config
+
 * Fields:
 
   * `temperatureLimit`
   * `readingIntervalSeconds`
   * `highToleranceEnabled`
   * `highToleranceReason`
+
 * Actions:
 
   * Create/Update
@@ -218,13 +223,16 @@ npx expo start --tunnel --port 8085 -c
 ### 7.2 Readings Tab
 
 * Debounced device ID
+
 * “Critical only” filter
+
 * List:
 
   * Timestamp
   * Temperature + applied limit
   * Critical highlight
-* Emergency call shortcut (193)
+
+* Emergency call shortcut (193) 🚨
 
 ### 7.3 Mobile Services
 
@@ -242,7 +250,7 @@ npx expo start --tunnel --port 8085 -c
 
 ---
 
-## 8. Embedded (ESP32) Overview
+## 8. Embedded (ESP32) Overview 🔧
 
 Responsibilities:
 
@@ -254,7 +262,7 @@ Responsibilities:
 
 ---
 
-# **9. Screenshots & Demo**
+## 9. Screenshots & Demo 🎥
 
 Below are some screenshots of the PrevenFire IoT mobile application used in this proof-of-concept.
 For this POC, I used **a single embedded device (ESP32)**.
@@ -262,48 +270,31 @@ However, the entire architecture fully supports **multiple devices simultaneousl
 
 ---
 
-## **9.1 Home Screen**
-
-The home screen provides quick access to monitoring and device configuration, highlighting the core purpose of the platform: fire-prevention through real-time temperature tracking.
+### 9.1 Home Screen
 
 <img src="https://github.com/user-attachments/assets/51dc0ea1-b41b-4bd1-a02f-1902edfec7fc" width="300" />
 
-
 ---
 
-## **9.2 Device Configuration**
-
-Here the user can change the temperature limit, reading interval, and enable high-tolerance mode.
-The app applies debounce logic and visual feedback to ensure a smooth and responsive UX.
+### 9.2 Device Configuration
 
 <img src="https://github.com/user-attachments/assets/d5da4241-05b7-4b6b-97ed-509c38f2a971" width="300" />
 
-
 ---
 
-## **9.3 Real-Time Monitoring**
-
-This screen displays all sensor readings sent by the ESP32. User can filter to view only criticals (temperatures above the configured limit).
+### 9.3 Real-Time Monitoring
 
 <img src="https://github.com/user-attachments/assets/a02ebcc0-236d-4ad1-9e7b-a9e80c472958" width="300" />
 
-
 ---
 
-## **9.4 Demonstration Video**
-
+### 9.4 Demonstration Video
 The video below shows the full workflow of the platform in action — from configuring settings in the app, through communication with the ESP32, to the light triggered when the temperature exceeds the threshold:
-
-🔗 **YouTube – Full Demo:** *https://youtube.com/shorts/zkysfFy7sE8?si=CHGJWQq9r-BO13Zx*
-
----
-
-Se quiser, posso integrar isso automaticamente no seu README inteiro, revisar o inglês geral da documentação ou deixá-lo ainda mais profissional.
-
+🎞️ **YouTube – Full Demo:** [https://youtube.com/shorts/zkysfFy7sE8?si=CHGJWQq9r-BO13Zx](https://youtube.com/shorts/zkysfFy7sE8?si=CHGJWQq9r-BO13Zx)
 
 ---
 
-## 10. Roadmap
+## 10. Roadmap 🧭
 
 ### Backend
 
@@ -324,6 +315,6 @@ Se quiser, posso integrar isso automaticamente no seu README inteiro, revisar o 
 
 ---
 
-## 11. License
+## 11. License 📄
 
 This is a proof-of-concept platform for temperature monitoring and alerting. You may adapt it for environments such as cold storage, pools, or data centers while maintaining good security and scalability practices.
